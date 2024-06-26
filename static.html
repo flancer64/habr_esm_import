@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The static import</title>
+    <script type="module">
+        // IMPORT
+        import engine from 'https://unpkg.com/store-esm@3.0.0/src/store-engine.js';
+        import storages from 'https://unpkg.com/store-esm@3.0.0/storages/all.js';
+        import plugins from 'https://unpkg.com/store-esm@3.0.0/plugins/all.js';
+        import {
+            TwingEnvironment,
+            TwingLoaderArray
+        } from 'https://unpkg.com/@cloudfour/twing-browser-esm@5.1.1/dist/index.mjs';
+
+        // FUNCS
+        function useStore(engine, storages, plugins) {
+            const store = engine.createStore(storages, plugins);
+            store.set('user', {name: 'Alex Gusev'});
+            document.body.innerHTML = JSON.stringify(store.get('user'));
+        }
+
+        function useTwing(TwingEnvironment, TwingLoaderArray) {
+            const templates = {
+                'index.twig': `
+<h1>{{ title }}</h1>
+<p>{{ message }}</p>
+`
+            };
+            const loader = new TwingLoaderArray(templates);
+            const twing = new TwingEnvironment(loader);
+            const context = {
+                title: 'Hello, guys!',
+                message: 'Welcome to using Twing in the browser.'
+            };
+            twing.render('index.twig', context).then((output) => {
+                document.body.innerHTML = output;
+            }).catch((err) => {
+                console.error('Error rendering template:', err);
+            });
+        }
+
+        // MAIN
+        useStore(engine, storages, plugins);
+        useTwing(TwingEnvironment, TwingLoaderArray);
+    </script>
+</head>
+<body></body>
+</html>
